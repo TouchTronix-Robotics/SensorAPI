@@ -9,9 +9,9 @@ Tested on **Ubuntu 22.04** and **Windows**.
 
 Before running the examples, make sure you have installed the required package:
 
-```bash
+'''
 pip install pyserial
-
+‘’‘
 
 
 Examples
