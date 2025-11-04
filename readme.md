@@ -9,9 +9,9 @@ Tested on **Ubuntu 22.04** and **Windows**.
 
 Before running the examples, make sure you have installed the required package:
 
-'''
+```
 pip install pyserial
-‘’‘
+```
 
 
 Examples
@@ -22,9 +22,9 @@ This example identifies the available serial ports on your computer.
 
 Run command:
 
-‘’‘
+```
 python 000_Sensor_Connection.py
-’‘’
+```
 
 
 
@@ -47,9 +47,9 @@ This example allows the computer to read multiple sensors and adjust the output 
 (Default frequency: 100 Hz)
 
 Run command:
-‘’‘
+```
 python 002_MultiSensor_Frequency.py
-’‘’
+```
 
 
 
@@ -63,9 +63,9 @@ For Ubuntu:
 ls /dev/tty*
 
 make sure you have enable the premission on ubuntu
-'''
+```
 chmod a+rw /dev/tty0
-'''
+```
 replace the serial port if needed
 
 
