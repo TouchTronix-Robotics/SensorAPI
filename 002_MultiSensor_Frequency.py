@@ -4,24 +4,24 @@ from TactXAPI.ForceSensor import ForceSensor
 from TactXAPI.MultiSensor import MultiSensor  
 
 def main():
-    # 1) 
+    # 1) Initialize sensors
     left  = ForceSensor("/dev/ttyUSB0", baud_rate=921600)
     right = ForceSensor("/dev/ttyUSB1", baud_rate=921600)
 
-    # 2) 丢给 MultiSensor 管理；设定 100 Hz 读取 + 100 Hz 对外发布
+    # 2) Pass sensors to MultiSensor; set 100 Hz read rate and 100 Hz emit rate
     ms = MultiSensor(
         sensors={"left": left, "right": right},
-        read_hz=100.0,  # 读线程节流到 ~100Hz（设备更慢则以设备为准）
-        emit_hz=100.0,  # 统一以 ~100Hz 触发 on_emit 回调
+        read_hz=100.0,  # Throttle each reading thread to ~100 Hz (actual device rate may be lower)
+        emit_hz=100.0,  # Trigger the unified on_emit callback at ~100 Hz
     )
 
-    # 对外统一回调：每次触发拿到所有传感器的“最新帧”
+    # Unified external callback: triggered each cycle with the latest frames from all sensors
     def on_emit(batch, ts):
         # batch: dict{name: frame}
         lf = batch["left"]
         rf = batch["right"]
 
-        # 举例：打印每块的最大值
+        # Example: print the maximum value of each sensor
         lv, lr, lc = ms.get_max("left")
         rv, rr, rc = ms.get_max("right")
         print(f"[emit ts={ts:.6f}] left_max={lv}@({lr},{lc}) | right_max={rv}@({rr},{rc})")
@@ -31,7 +31,7 @@ def main():
     try:
         print("Start MultiSensor at 100 Hz (read & emit)...")
         ms.start()
-        time.sleep(5.0)  # 跑 5 秒
+        time.sleep(5.0)  # Run for 5 seconds
     except KeyboardInterrupt:
         pass
     finally:
