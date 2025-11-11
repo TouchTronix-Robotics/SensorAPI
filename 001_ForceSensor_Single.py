@@ -1,7 +1,7 @@
 # example_forcesensor_only.py
 import time
 import numpy as np
-from TactXAPI.ForceSensor import ForceSensor  # 这里按你的文件名/路径导入
+from TactXAPI.ForceSensor import ForceSensor  # Import according to your file name/path
 
 def main():
     fs = ForceSensor(port="/dev/ttyUSB0", baud_rate=921600)
@@ -12,19 +12,19 @@ def main():
 
     try:
         print(f"Start reading at ~{target_hz} Hz using ForceSensor only...")
-        t_end = time.perf_counter() + 15.0  # 跑 5 秒
+        t_end = time.perf_counter() + 15.0  # Run for 15 seconds
         while time.perf_counter() < t_end:
-            # 1) 等到下一个周期点（简易的定频节流）
+            # 1) Wait until the next cycle point (simple fixed-rate throttling)
             now = time.perf_counter()
             if now < next_deadline:
                 time.sleep(next_deadline - now)
             next_deadline += period
 
-            # 2) 读取一帧（find_frame 内部会阻塞直到拿到完整帧）
-            frame = fs.find_frame()  # np.uint16, 形状 (20, 8)
-            print (frame)
+            # 2) Read one frame (find_frame will block until a complete frame is received)
+            frame = fs.find_frame()  # np.uint16, shape (20, 8)
+            print(frame)
 
-            # 3) 做点处理（例如拿最大值）
+            # 3) Do some processing (for example, get the maximum value)
             idx = int(np.argmax(frame))
             row, col = divmod(idx, fs.num_cols)
             max_val = int(frame[row, col])
@@ -33,7 +33,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
-        # 关闭串口
+        # Close the serial port
         fs.ser.close()
         print("Stopped.")
 
