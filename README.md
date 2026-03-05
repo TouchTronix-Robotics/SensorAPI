@@ -35,9 +35,11 @@ python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --c
 
 | Model     | Grid  | Part Number        | Example Command |
 |-----------|-------|--------------------|-----------------|
-| SensX 25  | 5x5   | SNX0505-SNS-01     | `python examples/stream_example.py --rows 5 --cols 5` |
-| SensX 160 | 20x8  | SNX2006-SNS-01     | `python examples/stream_example.py --rows 20 --cols 8` |
-| SensX 192 | 12x16 | SNX1216-SNS-01     | `python examples/stream_example.py --rows 12 --cols 16` |
+| SensX 25  | 5x5   | SNX0505-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5` |
+| SensX 160 | 20x8  | SNX2006-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 20 --cols 8` |
+| SensX 192 | 16x12 | SNX1216-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 15000000 --rows 16 --cols 12` * |
+
+\* SensX 192 baud rate is unverified — may be 921600 instead of 15000000.
 
 ## Quick Start
 
