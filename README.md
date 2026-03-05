@@ -106,16 +106,6 @@ pip install --upgrade pip setuptools wheel
 pip install -e .
 ```
 
-If you still can't use editable mode, a regular install also works:
-
-```bash
-pip install .
-```
-
-### `ModuleNotFoundError: No module named 'sensx'`
-
-The install step above likely failed. Check the install output and retry.
-
 ### `command 'python' not found`
 
 On Ubuntu 22.04+, use `python3` instead of `python`, or install the compatibility package:
