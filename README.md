@@ -38,9 +38,9 @@ python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --c
 |-----------|-------|--------------------|-----------------|
 | SensX 25  | 5x5   | SNX0505-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5` |
 | SensX 160 | 20x8  | SNX2006-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 20 --cols 8` |
-| SensX 192 | 16x12 | SNX1216-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 15000000 --rows 16 --cols 12` * |
+| SensX 192 | 16x12 | SNX1216-SNS-01     | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 1500000 --rows 16 --cols 12` * |
 
-\* SensX 192 baud rate is unverified — may be 921600 instead of 15000000.
+\* SensX 192 baud rate is unverified — may be 921600 instead of 1500000.
 
 ## Quick Start
 
