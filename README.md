@@ -31,6 +31,14 @@ python examples/stream_example.py --benchmark
 python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5
 ```
 
+### Supported Sensors
+
+| Model     | Grid  | Part Number        | Example Command |
+|-----------|-------|--------------------|-----------------|
+| SensX 25  | 5x5   | SNX0505-SNS-01     | `python examples/stream_example.py --rows 5 --cols 5` |
+| SensX 160 | 20x8  | SNX2006-SNS-01     | `python examples/stream_example.py --rows 20 --cols 8` |
+| SensX 192 | 12x16 | SNX1216-SNS-01     | `python examples/stream_example.py --rows 12 --cols 16` |
+
 ## Quick Start
 
 Blocking read:
@@ -79,11 +87,3 @@ with SensX(port="/dev/ttyUSB0") as sensor:
 | `latest_frame`        | Thread-safe copy of the most recent frame        |
 | `latest_timestamp`    | `time.perf_counter()` of the most recent frame   |
 | `on_frame`            | Callback: `fn(frame: np.ndarray, ts: float)`     |
-
-### Supported Sensors
-
-| Model     | Grid  | Part Number        |
-|-----------|-------|--------------------|
-| SensX 25  | 5x5   | SNX0505-SNS-01     |
-| SensX 160 | 20x8  | SNX2006-SNS-01     |
-| SensX 192 | 12x16 | SNX1216-SNS-01     |
