@@ -10,12 +10,30 @@ import numpy as np
 import serial
 
 
+def _crc8_maxim(data: bytes) -> int:
+    """Compute CRC8/Maxim (DOW) checksum."""
+    crc = 0x00
+    for b in data:
+        crc ^= b
+        for _ in range(8):
+            if crc & 0x01:
+                crc = (crc >> 1) ^ 0x8C
+            else:
+                crc >>= 1
+            crc &= 0xFF
+    return crc
+
+
 class SensX:
     """Read frames from a TouchTronix tactile sensor over serial.
 
     The sensor continuously streams frames.  Each frame is:
 
-        [0xFF][0xFF][payload: rows * cols * 2 bytes, big-endian uint16][tail: 1 byte]
+        [0xFF][0xFF][payload: rows * cols * 2 bytes, 12-bit big-endian][crc: 1 byte]
+
+    Payload values are 12-bit unsigned integers stored in big-endian
+    uint16 words (upper 4 bits masked off).  The trailing byte is a
+    CRC8-Maxim checksum over the payload.
 
     Blocking read::
 
@@ -41,7 +59,7 @@ class SensX:
     HEADER = b"\xff\xff"
     HEADER_LEN = 2
     BYTES_PER_PIXEL = 2
-    TAIL_LEN = 1  # trailing byte after payload (status / counter)
+    CRC_LEN = 1
 
     def __init__(
         self,
@@ -58,7 +76,7 @@ class SensX:
         self.cols = cols
 
         self._payload_size = rows * cols * self.BYTES_PER_PIXEL
-        self._frame_size = self.HEADER_LEN + self._payload_size + self.TAIL_LEN
+        self._frame_size = self.HEADER_LEN + self._payload_size + self.CRC_LEN
         self._read_chunk = read_chunk
 
         # Serial port (opened immediately so wiring errors surface early)
@@ -142,6 +160,18 @@ class SensX:
     # Synchronous (blocking) read
     # ------------------------------------------------------------------
 
+    def _parse_frame(self, raw: bytes) -> Optional[np.ndarray]:
+        """Validate CRC and parse raw frame bytes into a numpy array.
+
+        Returns None if CRC check fails.
+        """
+        payload = raw[self.HEADER_LEN : self.HEADER_LEN + self._payload_size]
+        crc_byte = raw[-1]
+        if _crc8_maxim(payload) != crc_byte:
+            return None
+        frame = np.frombuffer(payload, dtype=">u2").reshape(self.rows, self.cols)
+        return (frame & 0x0FFF).astype(np.uint16)
+
     def read_frame(self) -> np.ndarray:
         """Block until one complete frame is received and return it.
 
@@ -154,12 +184,11 @@ class SensX:
             # Check buffer first before reading more data
             idx = buf.find(self.HEADER)
             if idx != -1 and len(buf) >= idx + self._frame_size:
-                payload_end = idx + self.HEADER_LEN + self._payload_size
-                payload = bytes(buf[idx + self.HEADER_LEN : payload_end])
+                raw = bytes(buf[idx : idx + self._frame_size])
                 del buf[: idx + self._frame_size]
-                frame = np.frombuffer(payload, dtype=">u2").reshape(
-                    self.rows, self.cols
-                )
+                frame = self._parse_frame(raw)
+                if frame is None:
+                    continue  # CRC failed, try next frame
                 with self._lock:
                     self._frame[:] = frame
                     self._timestamp = time.perf_counter()
@@ -208,16 +237,15 @@ class SensX:
                         del buf[:idx]
                     break
 
-                # Full frame available — slice only the pixel payload
-                payload_end = idx + self.HEADER_LEN + self._payload_size
-                payload = bytes(buf[idx + self.HEADER_LEN : payload_end])
-                # Advance past entire frame (header + payload + tail)
+                # Full frame available
+                raw = bytes(buf[idx : idx + self._frame_size])
                 del buf[: idx + self._frame_size]
 
+                frame = self._parse_frame(raw)
+                if frame is None:
+                    continue  # CRC failed, skip
+
                 ts = time.perf_counter()
-                frame = np.frombuffer(payload, dtype=">u2").reshape(
-                    self.rows, self.cols
-                )
 
                 with self._lock:
                     self._frame[:] = frame
