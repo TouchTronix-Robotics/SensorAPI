@@ -20,25 +20,26 @@ sudo chmod a+rw /dev/ttyUSB0
 
 ```bash
 # Print sensor grid (default: 5x5)
-python examples/stream_example.py
+python examples/stream_one.py
 
 # Specify sensor size
-python examples/stream_example.py --rows 20 --cols 8
+python examples/stream_one.py --rows 20 --cols 8
 
 # Measure frame rate
-python examples/stream_example.py --benchmark
+python examples/stream_one.py --benchmark
 
-# All options
-python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5
+# Hub with two sensors
+python examples/stream_hub.py --port /dev/ttyUSB0 --baud 1500000 --rows 16 --cols 12
 ```
 
 ### Supported Sensors
 
 | Model     | Grid  | Image | Example Command |
 |-----------|-------|-------|-----------------|
-| SensX 25  | 5x5   | <img src="assets/sensx_5x5.png" width="100"> | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5` |
-| SensX 160 | 20x8  | <img src="assets/sensx_20x8.png" width="100"> | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 921600 --rows 20 --cols 8` |
-| SensX 192 | 16x12 | <img src="assets/sensx_16x12.png" width="100"> | `python examples/stream_example.py --port /dev/ttyUSB0 --baud 1500000 --rows 16 --cols 12` |
+| SensX 25  | 5x5   | <img src="assets/sensx_5x5.png" width="100"> | `python examples/stream_one.py --port /dev/ttyUSB0 --baud 921600 --rows 5 --cols 5` |
+| SensX 160 | 20x8  | <img src="assets/sensx_20x8.png" width="100"> | `python examples/stream_one.py --port /dev/ttyUSB0 --baud 921600 --rows 20 --cols 8` |
+| SensX 192 | 16x12 | <img src="assets/sensx_16x12.png" width="100"> | `python examples/stream_one.py --port /dev/ttyUSB0 --baud 1500000 --rows 16 --cols 12` |
+| SensX 2x192 | 2x(16x12) | To be updated | `python examples/stream_hub.py --port /dev/ttyUSB0 --baud 1500000 --rows 16 --cols 12` |
 
 
 ## Quick Start
