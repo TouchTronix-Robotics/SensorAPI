@@ -103,10 +103,10 @@ When testing on windows OS, in the case of Frequency drop:
 1. Open device manager.
 2. Navigate to the Ports and select the device, right click and open properties.
 
-<img width="416" height="470" alt="image" src="https://github.com/user-attachments/assets/1f138d7c-be0c-41fb-918b-7423d0d90a47" />
+<img width="416" height="470" alt="image" src="assets/faq1.png" />
 
 3. go to advanced under the Port Settings.
 4. Change the Latency Timer (msec) to 1 and click OK.
 
-<img width="635" height="464" alt="image" src="https://github.com/user-attachments/assets/652592aa-c130-4813-93cd-8d26923290e1" />
+<img width="635" height="464" alt="image" src="assets/faq2.png" />
 
